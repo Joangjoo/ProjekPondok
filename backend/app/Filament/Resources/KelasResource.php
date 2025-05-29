@@ -15,6 +15,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\BooleanColumn;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -72,6 +73,10 @@ class KelasResource extends Resource
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('harga')->money('IDR'),
+                ImageColumn::make('thumbnail')
+                    ->disk('public')
+                    ->size(50)
+                    ->circular(),
                 TextColumn::make('created_at')->dateTime(),
             ])
             ->filters([
