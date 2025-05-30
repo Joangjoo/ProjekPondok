@@ -42,7 +42,7 @@ class KelasResource extends Resource
                     ->options([
                         'Pemula' => 'Pemula',
                         'Menengah' => 'Menengah',
-                        'Semua Level' => 'Semua Level',
+                        'Profesional' => 'Profesional',
                     ])
                     ->required(),
                 TextInput::make('bahasa')->default('Indonesia'),

@@ -7,18 +7,31 @@ export interface User {
 }
 
 export interface Course {
-  id: string;
-  title: string;
-  description: string;
-  instructor: string;
-  duration: string;
-  schedule: string;
-  category: string;
-  level: 'beginner' | 'intermediate' | 'advanced';
-  image: string;
-  enrolledCount: number;
-  price: number;
+  id: number;
+  judul: string;
+  slug: string;
+  deskripsi: string;
+  thumbnail: string;
+  kategori_id: number;
+  kategori?: {
+    id: number;
+    nama: string;
+  };
+  level: 'Pemula' | 'Menengah' | 'Profesional';
+  bahasa: string;
+  berbayar: boolean;
+  harga: number;
+  jumlah_pelajaran: number;
+  jumlah_video: number;
   rating: number;
+  jumlah_review: number;
+  jumlah_pendaftar: number;
+  penyelenggara: string;
+  guru_id: number;
+  guru?: {
+    id: number;
+    nama: string;
+  };
 }
 
 export interface Enrollment {

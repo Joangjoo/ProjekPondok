@@ -1,16 +1,75 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react'; 
 import { Link } from 'react-router-dom';
 import { Book, Users, Clock, Award, ChevronRight } from 'lucide-react';
 import Layout from '../components/layout/Layout';
 import CourseCard from '../components/course/CourseCard';
 import Button from '../components/ui/Button';
-import { courses } from '../data/courses';
+import axios from 'axios'; 
+import { Course } from '../types';
 
 const Home: React.FC = () => {
-  // Featured courses (show top 3 based on rating)
-  const featuredCourses = [...courses]
-    .sort((a, b) => b.rating - a.rating)
-    .slice(0, 3);
+  const [featuredCourses, setFeaturedCourses] = useState<Course[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchFeaturedCourses = async () => {
+      try {
+        const response = await axios.get<Course[]>('http://localhost:8000/api/kelas');
+        console.log("Data kelas dari API:", response.data);
+        const sortedCourses = [...response.data]
+          .sort((a, b) => (b.rating || 0) - (a.rating || 0)) 
+          .slice(0, 3);
+
+        setFeaturedCourses(sortedCourses);
+      } catch (err) {
+        console.error("Error fetching featured courses:", err);
+        setError('Gagal memuat kursus unggulan. Silakan coba lagi nanti.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFeaturedCourses();
+  }, []); 
+
+  if (loading) {
+    return (
+      <Layout>
+        <div className="text-center py-12">
+          <p className="text-gray-600 text-lg">Memuat kursus unggulan...</p>
+        </div>
+      </Layout>
+    );
+  }
+
+  if (error) {
+    return (
+      <Layout>
+        <div className="text-center py-12">
+          <h3 className="text-2xl font-semibold text-red-600 mb-4">Terjadi Kesalahan!</h3>
+          <p className="text-gray-700 mb-6">{error}</p>
+          <Button onClick={() => window.location.reload()} variant="primary">
+            Coba Muat Ulang
+          </Button>
+        </div>
+      </Layout>
+    );
+  }
+
+  if (featuredCourses.length === 0) {
+    return (
+      <Layout>
+        <div className="text-center py-12">
+          <h3 className="text-2xl font-semibold text-gray-900 mb-4">Tidak ada kursus unggulan yang ditemukan</h3>
+          <p className="text-gray-600">
+            Coba tambahkan beberapa kursus di backend Anda atau periksa koneksi API.
+          </p>
+        </div>
+      </Layout>
+    );
+  }
+
 
   return (
     <Layout>
@@ -26,7 +85,7 @@ const Home: React.FC = () => {
               Tingkatkan Pemahaman Agama dengan Kursus Berkualitas
             </h1>
             <p className="text-lg md:text-xl mb-8 text-green-50">
-              Pelajari ilmu agama dari ustadz dan ustadzah terbaik dalam format kursus 
+              Pelajari ilmu agama dari ustadz dan ustadzah terbaik dalam format kursus
               yang sistematis dan mudah dipahami.
             </p>
             <div className="flex flex-wrap gap-4">
@@ -149,7 +208,7 @@ const Home: React.FC = () => {
                 </div>
               </div>
               <p className="text-gray-600 italic">
-                "Alhamdulillah, saya sangat terbantu dengan metode pengajaran yang sistematis dan mudah dipahami. 
+                "Alhamdulillah, saya sangat terbantu dengan metode pengajaran yang sistematis dan mudah dipahami.
                 Ustadzah sangat sabar dalam membimbing kami."
               </p>
               <div className="flex items-center mt-4 text-amber-500">
@@ -174,7 +233,7 @@ const Home: React.FC = () => {
                 </div>
               </div>
               <p className="text-gray-600 italic">
-                "Saya banyak belajar tentang fikih ibadah sehari-hari yang sangat aplikatif. 
+                "Saya banyak belajar tentang fikih ibadah sehari-hari yang sangat aplikatif.
                 Materinya komprehensif dan ustadz menyampaikannya dengan baik."
               </p>
               <div className="flex items-center mt-4 text-amber-500">
@@ -199,7 +258,7 @@ const Home: React.FC = () => {
                 </div>
               </div>
               <p className="text-gray-600 italic">
-                "Awalnya saya kesulitan belajar bahasa Arab, tapi dengan metode yang diajarkan di sini, 
+                "Awalnya saya kesulitan belajar bahasa Arab, tapi dengan metode yang diajarkan di sini,
                 saya mulai bisa membaca dan memahami teks Arab dasar."
               </p>
               <div className="flex items-center mt-4 text-amber-500">
