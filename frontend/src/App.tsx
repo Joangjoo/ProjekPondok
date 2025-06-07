@@ -5,6 +5,7 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import Home from './pages/Home';
 import Login from './pages/auth/Login';
 import CoursesPage from './pages/courses/CoursesPage';
+import CourseDetail from './pages/courses/CourseDetail';
 
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminCourses from './pages/admin/AdminCourses';
@@ -47,6 +48,9 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/courses" element={<CoursesPage />} />
+          <Route path="/courses/:id" element={<CourseDetail />} />
+          
+          {/* Protected Routes */}
           
           {/* Admin Routes */}
           <Route 

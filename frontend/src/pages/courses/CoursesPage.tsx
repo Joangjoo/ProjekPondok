@@ -32,6 +32,7 @@ interface Kelas {
   guru?: { 
     id: number;
     nama: string;
+    bio: string;
   };
 }
 

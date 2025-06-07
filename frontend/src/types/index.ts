@@ -31,6 +31,7 @@ export interface Course {
   guru?: {
     id: number;
     nama: string;
+    bio: string;
   };
 }
 

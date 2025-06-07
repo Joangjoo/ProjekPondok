@@ -10,8 +10,6 @@ class KelasController extends Controller
 {
     public function index()
     {
-        // Ambil semua data Kelas beserta relasi Kategori dan Guru
-        // Menggunakan select untuk memilih kolom yang relevan dan menghindari data sensitif
         $kelas = Kelas::with(['kategori:id,nama', 'guru:id,nama'])
                       ->select(
                           'id',
@@ -37,11 +35,10 @@ class KelasController extends Controller
         return response()->json($kelas);
     }
 
-    public function show($slug)
+    public function show($id)
     {
-        // Temukan Kelas tertentu berdasarkan slug beserta relasi Kategori dan Guru
-        $kelas = Kelas::where('slug', $slug)
-                      ->with(['kategori:id,nama', 'guru:id,nama'])
+        $kelas = Kelas::where('id', $id)
+                      ->with(['kategori:id,nama', 'guru:id,nama,bio'])
                       ->select(
                           'id',
                           'judul',
@@ -61,7 +58,7 @@ class KelasController extends Controller
                           'penyelenggara',
                           'guru_id'
                       )
-                      ->first();
+                      ->find($id);
 
         if (!$kelas) {
             return response()->json(['message' => 'Kelas not found'], 404);

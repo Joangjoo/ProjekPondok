@@ -9,4 +9,4 @@ Route::get('/user', function (Request $request) {
 });
 
 Route::get('/kelas', [KelasController::class, 'index']);
-Route::get('/kelas/{slug}', [KelasController::class, 'show']);
+Route::get('/kelas/{id}', [KelasController::class, 'show']);
