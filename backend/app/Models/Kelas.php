@@ -24,6 +24,7 @@ class Kelas extends Model
         'jumlah_pendaftar',
         'penyelenggara',
         'guru_id',
+        'video_url',
     ];
 
     public function kategori(): BelongsTo
@@ -34,5 +35,36 @@ class Kelas extends Model
     public function guru(): BelongsTo
     {
         return $this->belongsTo(Guru::class);
+    }
+
+    public function setVideoUrlAttribute($value)
+    {
+        if (empty($value)) {
+            $this->attributes['video_url'] = null;
+            return;
+        }
+
+        $this->attributes['video_url'] = $this->convertToEmbedUrl($value);
+    }
+
+    public static function convertToEmbedUrl($url)
+    {
+        if (str_contains($url, 'youtube.com/embed')) {
+            return $url;
+        }
+
+        $patterns = [
+            '/youtube\.com\/watch\?v=([^&]+)/',
+            '/youtu\.be\/([^?]+)/',
+            '/youtube\.com\/embed\/([^\/]+)/'
+        ];
+
+        foreach ($patterns as $pattern) {
+            if (preg_match($pattern, $url, $matches)) {
+                return "https://www.youtube.com/embed/{$matches[1]}";
+            }
+        }
+
+        return $url;
     }
 }

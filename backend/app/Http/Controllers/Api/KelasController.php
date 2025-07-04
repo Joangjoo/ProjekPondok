@@ -28,6 +28,7 @@ class KelasController extends Controller
                 'jumlah_review',
                 'jumlah_pendaftar',
                 'penyelenggara',
+                'video_url',
                 'guru_id'
             )
             ->get();
@@ -56,6 +57,7 @@ class KelasController extends Controller
                 'jumlah_review',
                 'jumlah_pendaftar',
                 'penyelenggara',
+                'video_url',
                 'guru_id'
             )
             ->find($id);

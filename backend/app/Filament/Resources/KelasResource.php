@@ -54,6 +54,14 @@ class KelasResource extends Resource
                 TextInput::make('jumlah_review')->numeric()->default(0),
                 TextInput::make('jumlah_pendaftar')->numeric()->default(0),
                 TextInput::make('penyelenggara')->nullable(),
+                TextInput::make('video_url')
+                    ->label('URL Video YouTube')
+                    ->placeholder('https://www.youtube.com/watch?v=...')
+                    ->helperText('Masukkan link YouTube biasa, akan otomatis dikonversi ke format embed')
+                    ->afterStateUpdated(function ($state, $set) {
+                        $embedUrl = (new Kelas())->convertToEmbedUrl($state);
+                        $set('video_url', $embedUrl);
+                    }),
                 Select::make('guru_id')
                     ->relationship('guru', 'nama')
                     ->required(),
@@ -77,6 +85,9 @@ class KelasResource extends Resource
                     ->disk('public')
                     ->size(50)
                     ->circular(),
+                TextColumn::make('video_url')
+                    ->label('Video URL')
+                    ->searchable(),
                 TextColumn::make('created_at')->dateTime(),
             ])
             ->filters([
