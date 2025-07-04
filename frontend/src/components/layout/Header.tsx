@@ -34,10 +34,9 @@ const Header: React.FC = () => {
         <div className="flex justify-between h-20">
           <div className="flex items-center">
             <Link to="/" className="flex items-center space-x-3">
-              {/* Ganti dengan logo gambar */}
               <div className="w-10 h-10 flex items-center justify-center rounded-lg bg-white/10">
                 <img
-                  src="/assets/logo.png" // Ganti dengan path logo Anda
+                  src="/assets/logo.png" 
                   alt="Logo Yayasan Budi Mulya"
                   className="h-full w-full object-contain"
                 />
@@ -77,7 +76,6 @@ const Header: React.FC = () => {
 
                 {isUserDropdownOpen && (
                   <div
-                    // Efek transisi untuk muncul dan hilangnya dropdown
                     className="absolute right-0 mt-3 w-64 origin-top-right rounded-xl bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none transition-all duration-200 ease-in-out transform opacity-100 scale-100"
                     role="menu"
                     aria-orientation="vertical"
@@ -105,7 +103,7 @@ const Header: React.FC = () => {
                         Profil Saya
                       </Link>
                       <Link
-                        to="/member/courses" // Contoh link ke kursus saya
+                        to="/member/courses" 
                         onClick={() => setIsUserDropdownOpen(false)}
                         className="group flex items-center w-full px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
                       >

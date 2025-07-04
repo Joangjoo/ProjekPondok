@@ -85,14 +85,14 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, showActions = true }) =
 
         <div className="mt-auto pt-3 border-t border-gray-100">
           <div className="flex items-center justify-between">
-            <span className="font-bold text-green-800">
+            <span className="font-bold text-blue-800">
               {course.berbayar ? formattedPrice : 'Gratis'} 
             </span>
 
             {showActions && (
               <Link
                 to={`/courses/${id}`}
-                className="text-sm font-medium text-green-800 hover:text-green-900 underline"
+                className="text-sm font-medium text-blue-800 hover:text-blue-900 underline"
               >
                 Lihat Detail
               </Link>

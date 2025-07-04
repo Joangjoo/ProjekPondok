@@ -16,6 +16,7 @@ const Home: React.FC = () => {
     const fetchFeaturedCourses = async () => {
       try {
         const response = await axios.get<Course[]>('http://localhost:8000/api/kelas');
+        console.log('Data dari API:', response.data);
         const sortedCourses = [...response.data]
           .sort((a, b) => (b.rating || 0) - (a.rating || 0))
           .slice(0, 3);
@@ -203,7 +204,7 @@ const Home: React.FC = () => {
         </div>
       </section>
 
-      
+
 
       {/* CTA Section */}
       <section className="py-16 bg-gradient-to-br from-blue-800 to-blue-900 text-white">

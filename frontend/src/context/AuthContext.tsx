@@ -29,17 +29,15 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         try {
           const response = await apiClient.get('/api/user');
           setUser(response.data);
+          console.log('User data from token verification:', response.data);
           localStorage.setItem('user', JSON.stringify(response.data));
-          setError(null); // Clear any previous errors
+          setError(null); 
         } catch (error) {
-          // Handle error properly
           let errorMessage = 'Terjadi kesalahan saat memverifikasi token';
           if (error instanceof Error) {
             errorMessage = error.message || errorMessage;
           }
           setError(errorMessage);
-          
-          // Clean up invalid auth
           localStorage.removeItem('token');
           localStorage.removeItem('user');
           setToken(null);
@@ -57,7 +55,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     localStorage.setItem('user', JSON.stringify(userData));
     setToken(userToken);
     setUser(userData);
-    setError(null); // Clear errors on successful login
+    setError(null); 
     apiClient.defaults.headers.common['Authorization'] = `Bearer ${userToken}`;
   };
 
@@ -66,7 +64,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     localStorage.removeItem('user');
     setToken(null);
     setUser(null);
-    setError(null); // Clear errors on logout
+    setError(null); 
     delete apiClient.defaults.headers.common['Authorization'];
   };
 
