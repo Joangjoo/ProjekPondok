@@ -1,59 +1,78 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import apiClient from '../api';
 import { User } from '../types';
-import { users } from '../data/users';
 
 interface AuthContextType {
   user: User | null;
-  loading: boolean;
-  login: (email: string, password: string) => Promise<boolean>;
+  token: string | null;
+  login: (user: User, token: string) => void;
   logout: () => void;
+  isLoading: boolean;
+  error: string | null; // Add error to the context
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const [user, setUser] = useState<User | null>(() => {
+    const storedUser = localStorage.getItem('user');
+    return storedUser ? JSON.parse(storedUser) : null;
+  });
+  const [token, setToken] = useState<string | null>(() => localStorage.getItem('token'));
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null); // Properly manage error state
 
   useEffect(() => {
-    // Check if user is already logged in (from local storage)
-    const storedUser = localStorage.getItem('currentUser');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-    setLoading(false);
-  }, []);
-
-  const login = async (email: string, password: string): Promise<boolean> => {
-    setLoading(true);
-    
-    // Simulate API call
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        // In a real app, this would be a proper authentication
-        const foundUser = users.find(u => u.email === email);
-        
-        if (foundUser && password === 'password') { // Dummy password check
-          setUser(foundUser);
-          localStorage.setItem('currentUser', JSON.stringify(foundUser));
-          setLoading(false);
-          resolve(true);
-        } else {
-          setLoading(false);
-          resolve(false);
+    const verifyToken = async () => {
+      if (token && !user) {
+        apiClient.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        try {
+          const response = await apiClient.get('/api/user');
+          setUser(response.data);
+          localStorage.setItem('user', JSON.stringify(response.data));
+          setError(null); // Clear any previous errors
+        } catch (error) {
+          // Handle error properly
+          let errorMessage = 'Terjadi kesalahan saat memverifikasi token';
+          if (error instanceof Error) {
+            errorMessage = error.message || errorMessage;
+          }
+          setError(errorMessage);
+          
+          // Clean up invalid auth
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+          setToken(null);
+          setUser(null);
         }
-      }, 1000);
-    });
+      }
+      setIsLoading(false);
+    };
+
+    verifyToken();
+  }, [token, user]);
+
+  const login = (userData: User, userToken: string) => {
+    localStorage.setItem('token', userToken);
+    localStorage.setItem('user', JSON.stringify(userData));
+    setToken(userToken);
+    setUser(userData);
+    setError(null); // Clear errors on successful login
+    apiClient.defaults.headers.common['Authorization'] = `Bearer ${userToken}`;
   };
 
   const logout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    setToken(null);
     setUser(null);
-    localStorage.removeItem('currentUser');
+    setError(null); // Clear errors on logout
+    delete apiClient.defaults.headers.common['Authorization'];
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout }}>
-      {children}
+    <AuthContext.Provider value={{ user, token, login, logout, isLoading, error }}>
+      {!isLoading && children}
     </AuthContext.Provider>
   );
 };

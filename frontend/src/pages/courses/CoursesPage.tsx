@@ -1,102 +1,108 @@
 import React, { useState, useEffect } from 'react';
-import { Search, SlidersHorizontal, X, Star } from 'lucide-react'; 
-import Layout from '../../components/layout/Layout'; 
+import { Search, SlidersHorizontal, X, Star, BookOpen } from 'lucide-react';
+import Layout from '../../components/layout/Layout';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
 import Select from '../../components/ui/Select';
 import axios from 'axios';
 
-
-interface Kelas {
+interface Program {
   id: number;
   judul: string;
   slug: string;
   deskripsi: string;
   thumbnail: string;
   kategori_id: number;
-  kategori?: { 
+  kategori?: {
     id: number;
     nama: string;
   };
-  level: 'beginner' | 'intermediate' | 'advanced'; 
+  level: 'pemula' | 'menengah' | 'lanjutan';
   bahasa: string;
   berbayar: boolean;
   harga: number;
   jumlah_pelajaran: number;
   jumlah_video: number;
-  rating: number; 
+  rating: number;
   jumlah_review: number;
   jumlah_pendaftar: number;
   penyelenggara: string;
   guru_id: number;
-  guru?: { 
+  guru?: {
     id: number;
     nama: string;
     bio: string;
   };
 }
 
-const CoursesPage: React.FC = () => {
+const ProgramsPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('');
   const [levelFilter, setLevelFilter] = useState('');
   const [showFilters, setShowFilters] = useState(false);
-  const [loading, setLoading] = useState(true); 
-  const [error, setError] = useState<string | null>(null); 
-  const [kelasData, setKelasData] = useState<Kelas[]>([]); 
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [programData, setProgramData] = useState<Program[]>([]);
 
-  
   useEffect(() => {
-    const fetchKelas = async () => {
+    const fetchPrograms = async () => {
       try {
-        const response = await axios.get<Kelas[]>('http://localhost:8000/api/kelas'); 
-        setKelasData(response.data);
+        const response = await axios.get<Program[]>('http://localhost:8000/api/kelas');
+        setProgramData(response.data);
       } catch (err) {
-        setError('Gagal memuat data kursus. Silakan coba lagi nanti.');
-        console.error("Error fetching kelas data:", err);
+        setError('Gagal memuat data program. Silakan coba lagi nanti.');
+        console.error("Error fetching program data:", err);
       } finally {
-        setLoading(false); 
+        setLoading(false);
       }
     };
 
-    fetchKelas();
-  }, []); 
+    fetchPrograms();
+  }, []);
 
-  
-  const categories = Array.from(new Set(kelasData.map(kelas => kelas.kategori?.nama).filter(Boolean) as string[]));
+  const categories = Array.from(new Set(programData.map(program => program.kategori?.nama).filter(Boolean) as string[]));
 
-  
-  const filteredCourses = kelasData.filter(kelas => {
+  const filteredPrograms = programData.filter(program => {
     const matchesSearch =
-      kelas.judul.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      kelas.deskripsi.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (kelas.guru?.nama || '').toLowerCase().includes(searchTerm.toLowerCase()) || 
-      kelas.penyelenggara.toLowerCase().includes(searchTerm.toLowerCase());
+      program.judul.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      program.deskripsi.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (program.guru?.nama || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      program.penyelenggara.toLowerCase().includes(searchTerm.toLowerCase());
 
-    
-    const matchesCategory = categoryFilter ? (kelas.kategori?.nama === categoryFilter) : true;
-
-    
-    const matchesLevel = levelFilter ? kelas.level === levelFilter : true;
+    const matchesCategory = categoryFilter ? (program.kategori?.nama === categoryFilter) : true;
+    const matchesLevel = levelFilter ? program.level === levelFilter : true;
 
     return matchesSearch && matchesCategory && matchesLevel;
   });
 
- 
   const resetFilters = () => {
     setSearchTerm('');
     setCategoryFilter('');
     setLevelFilter('');
   };
 
+  const getLevelColor = (level: 'pemula' | 'menengah' | 'lanjutan') => {
+    // Tambahkan .toLowerCase() untuk memastikan perbandingan tidak case-sensitive
+    switch (level.toLowerCase()) {
+      case 'pemula':
+        return 'bg-blue-500 text-white';
+      case 'menengah':
+        return 'bg-amber-500 text-white';
+      case 'lanjutan':
+        return 'bg-red-500 text-white';
+      default:
+        return 'bg-gray-500 text-white';
+    }
+  };
+
   const isFilterActive = searchTerm || categoryFilter || levelFilter;
 
-  
   if (loading) {
     return (
       <Layout>
         <div className="text-center py-12">
-          <p className="text-gray-600 text-lg">Memuat kursus...</p>
+          <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600 text-lg">Memuat program...</p>
         </div>
       </Layout>
     );
@@ -118,12 +124,12 @@ const CoursesPage: React.FC = () => {
 
   return (
     <Layout>
-      <div className="bg-green-50 py-12">
+      <div className="bg-blue-50 py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h1 className="text-3xl font-bold text-gray-900 mb-4">Kursus Kami</h1>
+            <h1 className="text-3xl font-bold text-gray-900 mb-4 font-serif">Program Pendidikan</h1>
             <p className="max-w-2xl mx-auto text-lg text-gray-600">
-              Temukan kursus pilihan sesuai dengan kebutuhan belajar Anda
+              Temukan program pendidikan berkualitas untuk meningkatkan ilmu agama
             </p>
           </div>
 
@@ -134,10 +140,10 @@ const CoursesPage: React.FC = () => {
                 <div className="flex">
                   <div className="flex-grow">
                     <Input
-                      placeholder="Cari kursus..."
+                      placeholder="Cari program..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
-                      icon={<Search className="h-5 w-5" />}
+                      icon={<Search className="h-5 w-5 text-blue-500" />}
                       className="mb-0"
                     />
                   </div>
@@ -145,7 +151,7 @@ const CoursesPage: React.FC = () => {
                     <Button
                       variant="outline"
                       onClick={() => setShowFilters(!showFilters)}
-                      icon={<SlidersHorizontal className="h-5 w-5" />}
+                      icon={<SlidersHorizontal className="h-5 w-5 text-blue-500" />}
                     >
                       Filter
                     </Button>
@@ -167,30 +173,7 @@ const CoursesPage: React.FC = () => {
                       ]}
                     />
 
-                    <Select
-                      label="Level"
-                      value={levelFilter}
-                      onChange={(value) => setLevelFilter(value)}
-                      options={[
-                        { value: '', label: 'Semua Level' },
-                        { value: 'beginner', label: 'Pemula' },
-                        { value: 'intermediate', label: 'Menengah' },
-                        { value: 'advanced', label: 'Mahir' }
-                      ]}
-                    />
 
-                    {isFilterActive && (
-                      <div className="md:col-span-2 flex justify-end">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={resetFilters}
-                          icon={<X className="h-4 w-4" />}
-                        >
-                          Reset Filter
-                        </Button>
-                      </div>
-                    )}
                   </div>
                 )}
               </div>
@@ -199,11 +182,14 @@ const CoursesPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Courses Grid */}
+      {/* Programs Grid */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {filteredCourses.length === 0 ? (
+        {filteredPrograms.length === 0 ? (
           <div className="text-center py-12">
-            <h3 className="text-xl font-medium text-gray-900 mb-2">Tidak ada kursus yang ditemukan</h3>
+            <div className="mx-auto w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4">
+              <BookOpen className="w-8 h-8 text-blue-600" />
+            </div>
+            <h3 className="text-xl font-medium text-gray-900 mb-2">Tidak ada program yang ditemukan</h3>
             <p className="text-gray-600 mb-6">
               Cobalah menggunakan kata kunci pencarian yang berbeda atau reset filter.
             </p>
@@ -216,7 +202,7 @@ const CoursesPage: React.FC = () => {
         ) : (
           <>
             <div className="mb-6 flex justify-between items-center">
-              <p className="text-gray-600">Menampilkan {filteredCourses.length} kursus</p>
+              <p className="text-gray-600">Menampilkan {filteredPrograms.length} program</p>
               {isFilterActive && (
                 <Button
                   variant="ghost"
@@ -230,41 +216,56 @@ const CoursesPage: React.FC = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {filteredCourses.map(kelas => (
+              {filteredPrograms.map(program => (
                 <div
-                  key={kelas.id} // Menggunakan id dari data kelas sebagai key unik
-                  className="bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-200 hover:scale-[1.02] flex flex-col"
+                  key={program.id}
+                  className="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-200 hover:shadow-lg flex flex-col border border-gray-100"
                 >
-                  {/* Gambar Thumbnail */}
-                  <img
-                    src={kelas.thumbnail.startsWith('http') ? kelas.thumbnail : `http://localhost:8000/storage/${kelas.thumbnail}`}
-                    alt={kelas.judul}
-                    className="w-full h-48 object-cover"
-                  />
-                  <div className="p-4 flex flex-col flex-grow">
-                    {/* Kategori dan Level */}
-                    <p className="text-sm text-gray-600 mb-2">
-                      {kelas.kategori?.nama || 'Uncategorized'} | {kelas.level.charAt(0).toUpperCase() + kelas.level.slice(1)}
-                    </p>
-                    {/* Judul Kursus */}
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">{kelas.judul}</h3>
-                    {/* Deskripsi Kursus */}
-                    <p className="text-gray-700 text-sm mb-4 line-clamp-3">{kelas.deskripsi}</p>
+                  {/* Thumbnail */}
+                  <div className="relative h-48 overflow-hidden">
+                    <img
+                      src={program.thumbnail.startsWith('http') ? program.thumbnail : `http://localhost:8000/storage/${program.thumbnail}`}
+                      alt={program.judul}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute bottom-0 left-0  text-white py-1 text-sm font-medium">
+                       <span className={`px-3 py-1 text-xs font-medium ${getLevelColor(program.level)}`}>
+                        {program.level.charAt(0).toUpperCase() + program.level.slice(1)}
+                      </span>
+                    </div>
+                  </div>
 
-                    {/* Rating dan Review */}
-                    <div className="flex items-center text-sm text-gray-500 mb-2">
-                        <Star className="h-4 w-4 text-yellow-500 mr-1" fill="currentColor" />
-                        {kelas.rating ? kelas.rating.toFixed(1) : 'N/A'} ({kelas.jumlah_review} review)
+                  <div className="p-5 flex flex-col flex-grow">
+                    {/* Program Title */}
+                    <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2">{program.judul}</h3>
+
+                    {/* Description */}
+                    <p className="text-gray-600 text-sm mb-4 line-clamp-3">{program.deskripsi}</p>
+
+                    {/* Level Badge */}
+                    <div className="mb-4">
+                      <span className={`px-3 py-1 rounded-full text-xs font-medium ${getLevelColor(program.level)}`}>
+                        {program.level.charAt(0).toUpperCase() + program.level.slice(1)}
+                      </span>
                     </div>
 
-                    {/* Harga dan Instruktur/Penyelenggara */}
-                    <div className="flex justify-between items-center mt-auto pt-2 border-t border-gray-100">
-                      <span className="font-bold text-green-600 text-lg">
-                        {kelas.berbayar ? `Rp${kelas.harga.toLocaleString('id-ID')}` : 'Gratis'}
-                      </span>
-                      <span className="text-sm text-gray-500">
-                        {kelas.guru?.nama || kelas.penyelenggara}
-                      </span>
+                    {/* Rating and Price */}
+                    <div className="mt-auto pt-3 border-t border-gray-100 flex justify-between items-center">
+                      <div className="flex items-center">
+                        <Star className="h-4 w-4 text-amber-400 fill-current mr-1" />
+                        <span className="text-sm text-gray-600">
+                          {program.rating ? program.rating.toFixed(1) : 'Belum ada'} ({program.jumlah_review})
+                        </span>
+                      </div>
+                      <div className="text-right">
+                        <span className={`font-bold ${program.berbayar ? 'text-blue-600' : 'text-blue-600'
+                          }`}>
+                          {program.berbayar ? `Rp${program.harga.toLocaleString('id-ID')}` : 'Gratis'}
+                        </span>
+                        <p className="text-xs text-gray-500 mt-1">
+                          {program.guru?.nama || program.penyelenggara}
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -277,4 +278,4 @@ const CoursesPage: React.FC = () => {
   );
 };
 
-export default CoursesPage;
+export default ProgramsPage;
