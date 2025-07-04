@@ -57,6 +57,9 @@ const Header: React.FC = () => {
               <Link to="/contact" className="px-3 py-2 text-sm font-medium hover:text-blue-200 transition-colors">
                 Kontak
               </Link>
+              <Link to="/artikel" className="px-3 py-2 text-sm font-medium hover:text-blue-200 transition-colors">
+                Artikel
+              </Link>
             </nav>
           </div>
 
@@ -160,6 +163,7 @@ const Header: React.FC = () => {
           <Link to="/courses" className="block px-3 py-2 rounded-md text-base font-medium hover:bg-blue-800 hover:text-blue-200" onClick={() => setIsMenuOpen(false)}>Kursus</Link>
           <Link to="/about" className="block px-3 py-2 rounded-md text-base font-medium hover:bg-blue-800 hover:text-blue-200" onClick={() => setIsMenuOpen(false)}>Tentang Kami</Link>
           <Link to="/contact" className="block px-3 py-2 rounded-md text-base font-medium hover:bg-blue-800 hover:text-blue-200" onClick={() => setIsMenuOpen(false)}>Kontak</Link>
+          <Link to="/artikel" className="block px-3 py-2 rounded-md text-base font-medium hover:bg-blue-800 hover:text-blue-200" onClick={() => setIsMenuOpen(false)}>Artikel</Link>
 
           <div className="pt-4 pb-2 border-t border-blue-600">
             {user ? (

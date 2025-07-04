@@ -10,6 +10,7 @@ import CourseDetail from './pages/courses/CourseDetail';
 import RegisterPage from './pages/auth/Register';
 import AboutPage from './pages/about/AboutPage';
 import ContactPage from './pages/contact/ContactPage';
+import ArtikelPage from './pages/artikel/ArticlePage';
 
 
 
@@ -39,6 +40,8 @@ function App() {
           <Route path='/about' element={<AboutPage/>} />
 
           <Route path='/contact' element={<ContactPage/>} />
+
+          <Route path="/artikel" element={<ArtikelPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Router>

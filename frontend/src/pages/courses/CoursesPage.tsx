@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Search, SlidersHorizontal, X, Star, BookOpen } from 'lucide-react';
+import { Search, SlidersHorizontal, X, BookOpen } from 'lucide-react';
 import Layout from '../../components/layout/Layout';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
 import Select from '../../components/ui/Select';
 import axios from 'axios';
+import CourseCard from '../../components/course/CourseCard';
+
 
 interface Program {
   id: number;
@@ -48,10 +50,25 @@ const ProgramsPage: React.FC = () => {
     const fetchPrograms = async () => {
       try {
         const response = await axios.get<Program[]>('http://localhost:8000/api/kelas');
+        console.log('Data dari API:', response.data);
         setProgramData(response.data);
       } catch (err) {
-        setError('Gagal memuat data program. Silakan coba lagi nanti.');
-        console.error("Error fetching program data:", err);
+        let errorMessage = 'Gagal memuat program. Silakan coba lagi nanti.';
+
+        if (axios.isAxiosError(err)) {
+          if (err.response) {
+            errorMessage = `Error ${err.response.status}: ${err.response.data.message || 'Terjadi kesalahan server'}`;
+          } else if (err.request) {
+            errorMessage = 'Tidak ada respon dari server. Periksa koneksi internet Anda.';
+          } else {
+            errorMessage = 'Terjadi kesalahan saat mengkonfigurasi request.';
+          }
+        } else if (err instanceof Error) {
+          errorMessage = err.message;
+        }
+
+        setError(errorMessage);
+        console.error('Error fetching programs:', err);
       } finally {
         setLoading(false);
       }
@@ -69,7 +86,7 @@ const ProgramsPage: React.FC = () => {
       (program.guru?.nama || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
       program.penyelenggara.toLowerCase().includes(searchTerm.toLowerCase());
 
-    const matchesCategory = categoryFilter ? (program.kategori?.nama === categoryFilter) : true;
+    const matchesCategory = categoryFilter ? program.kategori?.nama === categoryFilter : true;
     const matchesLevel = levelFilter ? program.level === levelFilter : true;
 
     return matchesSearch && matchesCategory && matchesLevel;
@@ -79,20 +96,6 @@ const ProgramsPage: React.FC = () => {
     setSearchTerm('');
     setCategoryFilter('');
     setLevelFilter('');
-  };
-
-  const getLevelColor = (level: 'pemula' | 'menengah' | 'lanjutan') => {
-    // Tambahkan .toLowerCase() untuk memastikan perbandingan tidak case-sensitive
-    switch (level.toLowerCase()) {
-      case 'pemula':
-        return 'bg-blue-500 text-white';
-      case 'menengah':
-        return 'bg-amber-500 text-white';
-      case 'lanjutan':
-        return 'bg-red-500 text-white';
-      default:
-        return 'bg-gray-500 text-white';
-    }
   };
 
   const isFilterActive = searchTerm || categoryFilter || levelFilter;
@@ -172,8 +175,6 @@ const ProgramsPage: React.FC = () => {
                         }))
                       ]}
                     />
-
-
                   </div>
                 )}
               </div>
@@ -216,60 +217,18 @@ const ProgramsPage: React.FC = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {filteredPrograms.map(program => (
-                <div
-                  key={program.id}
-                  className="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-200 hover:shadow-lg flex flex-col border border-gray-100"
-                >
-                  {/* Thumbnail */}
-                  <div className="relative h-48 overflow-hidden">
-                    <img
-                      src={program.thumbnail.startsWith('http') ? program.thumbnail : `http://localhost:8000/storage/${program.thumbnail}`}
-                      alt={program.judul}
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute bottom-0 left-0  text-white py-1 text-sm font-medium">
-                       <span className={`px-3 py-1 text-xs font-medium ${getLevelColor(program.level)}`}>
-                        {program.level.charAt(0).toUpperCase() + program.level.slice(1)}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="p-5 flex flex-col flex-grow">
-                    {/* Program Title */}
-                    <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2">{program.judul}</h3>
-
-                    {/* Description */}
-                    <p className="text-gray-600 text-sm mb-4 line-clamp-3">{program.deskripsi}</p>
-
-                    {/* Level Badge */}
-                    <div className="mb-4">
-                      <span className={`px-3 py-1 rounded-full text-xs font-medium ${getLevelColor(program.level)}`}>
-                        {program.level.charAt(0).toUpperCase() + program.level.slice(1)}
-                      </span>
-                    </div>
-
-                    {/* Rating and Price */}
-                    <div className="mt-auto pt-3 border-t border-gray-100 flex justify-between items-center">
-                      <div className="flex items-center">
-                        <Star className="h-4 w-4 text-amber-400 fill-current mr-1" />
-                        <span className="text-sm text-gray-600">
-                          {program.rating ? program.rating.toFixed(1) : 'Belum ada'} ({program.jumlah_review})
-                        </span>
-                      </div>
-                      <div className="text-right">
-                        <span className={`font-bold ${program.berbayar ? 'text-blue-600' : 'text-blue-600'
-                          }`}>
-                          {program.berbayar ? `Rp${program.harga.toLocaleString('id-ID')}` : 'Gratis'}
-                        </span>
-                        <p className="text-xs text-gray-500 mt-1">
-                          {program.guru?.nama || program.penyelenggara}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
+              {filteredPrograms.map((course) => {
+                const levelMap: Record<string, "Pemula" | "Menengah" | "Profesional"> = {
+                  pemula: "Pemula",
+                  menengah: "Menengah",
+                  lanjutan: "Profesional"
+                };
+                const mappedCourse = {
+                  ...course,
+                  level: levelMap[course.level]
+                };
+                return <CourseCard key={course.id} course={mappedCourse} />;
+              })}
             </div>
           </>
         )}
