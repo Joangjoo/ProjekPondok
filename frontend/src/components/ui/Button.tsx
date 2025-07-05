@@ -19,7 +19,7 @@ const Button: React.FC<ButtonProps> = ({
   const baseStyle = 'rounded-md font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center';
   
   const variantStyles = {
-    primary: 'bg-green-800 text-white hover:bg-green-900 focus:ring-green-500',
+    primary: 'bg-blue-800 text-white hover:bg-blue-900 focus:ring-blue-500',
     secondary: 'bg-teal-500 text-white hover:bg-teal-600 focus:ring-teal-400',
     outline: 'border border-teal-800 text-teal-800 hover:bg-teal-50 focus:ring-teal-400',
     ghost: 'text-green-800 hover:bg-green-50 focus:ring-green-400',

@@ -31,7 +31,7 @@ const RegisterPage = () => {
             });
 
             alert('Registrasi berhasil! Silakan login.');
-            navigate('/login'); // Arahkan ke halaman login setelah berhasil
+            navigate('/login'); 
 
         } catch (err) {
             console.error('Error saat registrasi:', err);

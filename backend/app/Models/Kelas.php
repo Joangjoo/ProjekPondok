@@ -67,4 +67,11 @@ class Kelas extends Model
 
         return $url;
     }
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'kelas_user')
+            ->withPivot('status')
+            ->withTimestamps();
+    }
 }

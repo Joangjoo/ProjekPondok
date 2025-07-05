@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Menu, User, X, ChevronDown, LogOut, Settings, HelpCircle } from 'lucide-react';
+import { Menu, User, X, ChevronDown, LogOut, Settings, Book } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 
@@ -110,7 +110,7 @@ const Header: React.FC = () => {
                         onClick={() => setIsUserDropdownOpen(false)}
                         className="group flex items-center w-full px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
                       >
-                        <HelpCircle className="mr-3 h-5 w-5 text-gray-400 group-hover:text-blue-600 transition-colors" />
+                        <Book className="mr-3 h-5 w-5 text-gray-400 group-hover:text-blue-600 transition-colors" />
                         Kursus Saya
                       </Link>
                     </div>

@@ -27,17 +27,16 @@ const ArtikelPage: React.FC = () => {
 
     const categories = ['Semua', 'Pendidikan', 'Keagamaan', 'Sosial', 'Komunitas', 'Berita'];
 
-    // Color Palette
     const colors = {
-        primary: '#2B6CB0',      // Deep blue (Islamic theme)
-        secondary: '#38A169',    // Green (growth/education)
-        accent: '#D69E2E',       // Gold (featured/highlight)
-        lightBg: '#F7FAFC',      // Very light gray (background)
-        darkText: '#1A202C',     // Dark gray (text)
-        lightText: '#4A5568',    // Medium gray (secondary text)
+        primary: '#2B6CB0',      
+        secondary: '#38A169',    
+        accent: '#D69E2E',       
+        lightBg: '#F7FAFC',      
+        darkText: '#1A202C',     
+        lightText: '#4A5568',    
         white: '#FFFFFF',
         cardBg: '#FFFFFF',
-        cardHover: '#EBF8FF'     // Light blue hover
+        cardHover: '#EBF8FF'     
     };
 
     useEffect(() => {

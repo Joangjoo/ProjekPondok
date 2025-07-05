@@ -15,7 +15,6 @@ class DebugMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // Hentikan semua proses dan tampilkan pesan ini
         dd('Middleware "DebugMiddleware" BERHASIL DIJALANKAN.');
 
         return $next($request);

@@ -37,7 +37,6 @@ class AuthController extends Controller
     /**
      * Handle user login.
      */
-    // file: backend/app/Http/Controllers/Api/AuthController.php
 
     public function login(Request $request)
     {
@@ -54,7 +53,6 @@ class AuthController extends Controller
             ]);
         }
 
-        // Buat token
         $token = $user->createToken('api-token')->plainTextToken;
 
         return response()->json([

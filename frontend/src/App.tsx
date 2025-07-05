@@ -11,6 +11,7 @@ import RegisterPage from './pages/auth/Register';
 import AboutPage from './pages/about/AboutPage';
 import ContactPage from './pages/contact/ContactPage';
 import ArtikelPage from './pages/artikel/ArticlePage';
+import MyCoursesPage from './pages/member/MyCoursesPage';
 
 
 
@@ -31,17 +32,20 @@ function App() {
 
           <Route element={<ProtectedRoute />}>
             <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/member/courses" element={<MyCoursesPage />} />
           </Route>
 
           <Route path="/courses" element={<CoursesPage />} />
           <Route path="/courses/:id" element={<CourseDetail />} />
           {/* Fallback Route */}
 
-          <Route path='/about' element={<AboutPage/>} />
+          <Route path='/about' element={<AboutPage />} />
 
-          <Route path='/contact' element={<ContactPage/>} />
+          <Route path='/contact' element={<ContactPage />} />
 
           <Route path="/artikel" element={<ArtikelPage />} />
+
+
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Router>

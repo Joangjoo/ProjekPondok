@@ -53,3 +53,36 @@ export interface Member {
   enrollments: string[]; // courseIds
   status: 'active' | 'inactive';
 }
+
+
+export interface Kelas {
+    id: number;
+    judul: string;
+    deskripsi: string;
+    thumbnail: string;
+    kategori: { nama: string };
+    level: 'beginner' | 'intermediate' | 'advanced';
+    bahasa: string;
+    berbayar: boolean;
+    harga: number;
+    jumlah_pelajaran: number;
+    jumlah_video: number;
+    rating: number;
+    jumlah_review: number;
+    jumlah_pendaftar: number;
+    penyelenggara: string;
+    video_url: string;
+    guru: { nama: string; bio: string };
+    enrollment_status?: 'pending' | 'approved';
+}
+
+export interface EnrolledCourse {
+    id: number;
+    judul: string;
+    thumbnail: string;
+    kategori: string ;
+    pivot: {
+        status: 'pending' | 'approved';
+        created_at: string;
+    };
+}

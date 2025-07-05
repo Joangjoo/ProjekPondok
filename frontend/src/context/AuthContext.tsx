@@ -8,7 +8,7 @@ interface AuthContextType {
   login: (user: User, token: string) => void;
   logout: () => void;
   isLoading: boolean;
-  error: string | null; // Add error to the context
+  error: string | null; 
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -20,7 +20,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   });
   const [token, setToken] = useState<string | null>(() => localStorage.getItem('token'));
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null); // Properly manage error state
+  const [error, setError] = useState<string | null>(null); 
 
   useEffect(() => {
     const verifyToken = async () => {

@@ -38,13 +38,13 @@ class ArticleController extends Controller
     /**
      * Display the specified article.
      */
-     public function show(int $id)
+    public function show(int $id)
     {
         $article = Article::findOrFail($id);
 
         $article->increment('views');
 
-       
+
         return response()->json([
             'id' => $article->id,
             'title' => $article->title,
@@ -60,5 +60,4 @@ class ArticleController extends Controller
             'url' => $article->external_url,
         ]);
     }
-
 }
